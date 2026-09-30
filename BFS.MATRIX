@@ -1,0 +1,79 @@
+import java.util.Scanner;
+
+public class BFSMatrix {
+    static final int MAX = 100;
+    static int[] queue = new int[MAX];
+    static int front = -1;
+    static int rear = -1;
+    static int[] visited = new int[MAX];
+
+    static void enqueue(int vertex) {
+        if (rear == MAX - 1) {
+            return;
+        }
+        if (front == -1) {
+            front = 0;
+        }
+        rear = rear + 1;
+        queue[rear] = vertex;
+    }
+
+    static int dequeue() {
+        if (front == -1) {
+            return -1;
+        }
+        int vertex = queue[front];
+        if (front >= rear) {
+            front = -1;
+            rear = -1;
+        } else {
+            front = front + 1;
+        }
+        return vertex;
+    }
+
+    static void bfs(int[][] graph, int startVertex, int vertices) {
+        for (int i = 0; i < vertices; i++) {
+            visited[i] = 0;
+        }
+
+        enqueue(startVertex);
+        visited[startVertex] = 1;
+
+        System.out.print("BFS Traversal: ");
+
+        while (front != -1) {
+            int currentVertex = dequeue();
+            System.out.print(currentVertex + " ");
+
+            for (int i = 0; i < vertices; i++) {
+                if (graph[currentVertex][i] == 1 && visited[i] == 0) {
+                    enqueue(i);
+                    visited[i] = 1;
+                }
+            }
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the no. of vertices : ");
+        int vertices = scanner.nextInt();
+        
+        int[][] graph = new int[MAX][MAX];
+        
+        System.out.print("Enter the no. of edges : ");
+        for (int i = 0; i < vertices; i++) {
+            for (int j = 0; j < vertices; j++) {
+                graph[i][j] = scanner.nextInt();
+            }
+        }
+
+        int startVertex = scanner.nextInt();
+
+        bfs(graph, startVertex, vertices);
+
+        scanner.close();
+    }
+}
