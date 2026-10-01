@@ -1,0 +1,80 @@
+import java.util.*;
+
+public class Dijkstra {
+
+    static class Edge {
+        int to;
+        int weight;
+
+        Edge(int to, int weight) {
+            this.to = to;
+            this.weight = weight;
+        }
+    }
+
+    static int[] dijkstra(List<List<Edge>> graph, int source) {
+        int n = graph.size();
+
+        int[] dist = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[source] = 0;
+
+        // {distance, node}
+        PriorityQueue<int[]> pq =
+                new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+
+        pq.offer(new int[]{0, source});
+
+        while (!pq.isEmpty()) {
+            int[] current = pq.poll();
+
+            int distance = current[0];
+            int node = current[1];
+
+            // Ignore outdated entries
+            if (distance > dist[node]) {
+                continue;
+            }
+
+            for (Edge edge : graph.get(node)) {
+                int newDistance = distance + edge.weight;
+
+                if (newDistance < dist[edge.to]) {
+                    dist[edge.to] = newDistance;
+                    pq.offer(new int[]{newDistance, edge.to});
+                }
+            }
+        }
+
+        return dist;
+    }
+
+    public static void main(String[] args) {
+        int n = 5;
+
+        List<List<Edge>> graph = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
+
+        // Add edges: from -> to, weight
+        graph.get(0).add(new Edge(1, 4));
+        graph.get(0).add(new Edge(2, 1));
+
+        graph.get(2).add(new Edge(1, 2));
+        graph.get(1).add(new Edge(3, 1));
+        graph.get(2).add(new Edge(3, 5));
+        graph.get(3).add(new Edge(4, 3));
+
+        int source = 0;
+
+        int[] dist = dijkstra(graph, source);
+
+        System.out.println("Shortest distances from node " + source + ":");
+
+        for (int i = 0; i < n; i++) {
+            System.out.println("To " + i + " = " + dist[i]);
+        }
+    }
+}
